@@ -1,0 +1,24 @@
+version: "3"
+services:
+  node-app:
+    build:
+      context: . # place of dockerfile relatively to this file
+      args:
+        - NODE_ENV=development
+    volumes:
+      # 1st: binds local workdir (.) to path in the container (/app)
+      - ./:/app
+      # 2nd: anonymous path in the container
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      #* 2 next vars are needed here for mongoose connect command from index.js
+      - MONGO_USER=mick84
+      - MONGO_PASSWORD=m1i9k8e4
+      #* redis-session vars:
+      - SESSION_SECRET=secret
+    command: "yarn dev"
+  mongo:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mick84
+      - MONGO_INITDB_ROOT_PASSWORD=m1i9k8e4

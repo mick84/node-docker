@@ -1,0 +1,26 @@
+version: "3"
+services:
+  node-app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      #* here can be placed all env vars, so it's alternative to app's .env file!
+      - PORT=3000
+      #* redis-session vars:
+      - SESSION_SECRET=secret
+    depends_on: # * list of services, not images! It will make node-app service start after starting of all of the listed dependencies!
+      - mongo
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mick84
+      - MONGO_INITDB_ROOT_PASSWORD=m1i9k8e4
+    volumes:
+      # volume with name "mongo-db" (may be any other name as well), placed in the container on path data/db
+      - mongo-db:/data/db
+  redis:
+    image: redis
+# this is declaration of named volume mongo-db (MUST!!!)
+volumes:
+  mongo-db:

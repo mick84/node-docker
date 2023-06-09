@@ -1,0 +1,14 @@
+version: "3"
+services:
+  node-app:
+    build:
+      context: . # place of dockerfile relatively to this file
+      args:
+        - NODE_ENV=production
+    environment:
+      - NODE_ENV=production
+    command: "yarn start"
+  mongo:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mick84
+      - MONGO_INITDB_ROOT_PASSWORD=m1i9k8e4
