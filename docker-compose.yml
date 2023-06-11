@@ -1,9 +1,16 @@
 version: "3"
 services:
+  nginx:
+    image: nginx
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
   node-app:
     build: .
-    ports:
-      - "3000:3000"
+    #* ports: removed due to nginx ports adding
+    # ports:
+    #   - "3000:3000"
     environment:
       #* here can be placed all env vars, so it's alternative to app's .env file!
       - PORT=3000

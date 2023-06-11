@@ -16,7 +16,6 @@ const __dirname = path.dirname(__filename);
 const mongoURL = `mongodb://${cfg.MONGO_USER}:${cfg.MONGO_PASSWORD}@${cfg.MONGO_IP}:${cfg.MONGO_PORT}/?authSource=admin`;
 
 const redisClient = createClient({
-  legacyMode: true,
   socket: {
     host: cfg.REDIS_URL,
     port: cfg.REDIS_PORT,
@@ -41,6 +40,7 @@ const connectWithRetry = () =>
     .then(() => {
       console.log(`The Database connected successfully!`);
       appConnectWithRetry();
+      console.log("App is working!");
     })
     .catch((e) => {
       console.error(e);
@@ -56,6 +56,8 @@ const appConnectWithRetry = () =>
     console.log(`App is running on port ${process.env.PORT}`);
   });
 connectWithRetry();
+//! enable proxy: added after scaling with nginx
+app.enable("trust proxy");
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -66,16 +68,19 @@ app.use(
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 300000,
+      maxAge: 1000 * 60,
     },
   })
 );
 
-app.use(cors({ origin: "https://www.getpostman.com", credentials: true }));
+app.use(cors(/*{ origin: "https://www.getpostman.com", credentials: true }*/));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.get("/", (req, res) => res.send("<h1>Hello world!</h1>"));
+app.get("/api/v1", (req, res) => {
+  res.send("<h1>Hello world!</h1>");
+  console.log("got console log!");
+});
 app.use("/api/v1/posts/", postRouter);
 app.use("/api/v1/users/", userRouter);
 app.use(express.static(path.resolve(__dirname, "public")));

@@ -9,7 +9,7 @@ RUN if [ "$NODE_ENV" = "development" ]; \
     fi
 
 COPY . ./
-# will run on port 4000 on MY machine!
+# will run on port 3000 on MY machine!
 ENV PORT 3000
 EXPOSE ${PORT}
 CMD [ "yarn","dev" ]

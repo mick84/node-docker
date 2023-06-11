@@ -4,3 +4,4 @@ dockerfile
 .git
 .gitignore
 docker-compose*
+git-connect.txt

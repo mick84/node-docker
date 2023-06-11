@@ -1,6 +1,7 @@
 import e, { Router } from "express";
 import { Types } from "mongoose";
 import * as postCtrl from "../controllers/postCtrl.js";
+import protect from "../middleware/authMW.js";
 
 export const postRouter = Router();
 
@@ -22,9 +23,9 @@ const validateId = (req, res, next) => {
   }
 };
 
-postRouter.get("/", postCtrl.getAllPosts);
-postRouter.post("/", postCtrl.createPost);
+postRouter.get("/", protect, postCtrl.getAllPosts);
+postRouter.post("/", protect, postCtrl.createPost);
 
-postRouter.get("/:id", validateId, postCtrl.getPost);
-postRouter.patch("/:id", validateId, postCtrl.updatePost);
-postRouter.delete("/:id", validateId, postCtrl.deletePost);
+postRouter.get("/:id", protect, validateId, postCtrl.getPost);
+postRouter.patch("/:id", protect, validateId, postCtrl.updatePost);
+postRouter.delete("/:id", protect, validateId, postCtrl.deletePost);

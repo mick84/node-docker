@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import e from "express";
 import bcrypt from "bcrypt";
+import res from "express/lib/response.js";
 /**
  * @type e.RequestHandler
  */
@@ -25,22 +26,24 @@ export const signUp = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const data = await User.findOne({ username });
-    if (!data) {
+    const user = await User.findOne({ username });
+    if (!user) {
       throw {
         code: 404,
         message: `User ${username} does not exist.`,
       };
     }
-    const match = bcrypt.compareSync(password, data.password);
+    const match = bcrypt.compareSync(password, user.password);
     if (!match) {
       throw {
         code: 401,
         message: `Password ${password} is invalid`,
       };
     }
-    req.session.username = username; //!- crashes app!
-    res.status(200).json({ status: "success", data });
+    const sessionUser = user.toJSON();
+    delete sessionUser.password;
+    req.session.user = sessionUser; //!- crashes app!
+    res.status(200).json({ status: "success", data: sessionUser });
   } catch (error) {
     res.status(error.code).json({ status: "fail", error });
   }

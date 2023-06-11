@@ -62,12 +62,7 @@ export const updatePost = async (req, res) => {
     });
     res
       .status(201)
-      /*.cookie("connect.sid", req.sessionID, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 30000,
-      })
-      */
+
       .json({
         status: "success",
         data,
